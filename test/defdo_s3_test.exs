@@ -1,8 +1,8 @@
-defmodule ReqS3Test do
+defmodule Defdo.S3Test do
   use ExUnit.Case, async: true
 
   @moduletag :integration
-  doctest ReqS3, tags: [:integration], only: [presign_url: 1]
+  doctest Defdo.S3, tags: [:integration], only: [presign_url: 1]
 
   if System.get_env("REQ_AWS_ACCESS_KEY_ID") do
     for name <- ~w[AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_ENDPOINT_URL_S3],
@@ -19,7 +19,7 @@ defmodule ReqS3Test do
     if @access_key_id do
       %{status: 200} =
         Req.put!(
-          plugins: [ReqS3],
+          plugins: [Defdo.S3],
           url: "s3://#{System.fetch_env!("BUCKET_NAME")}/key1",
           body: "Hello, World!"
         )
@@ -31,7 +31,7 @@ defmodule ReqS3Test do
   test "list buckets" do
     req =
       Req.new()
-      |> ReqS3.attach()
+      |> Defdo.S3.attach()
 
     bucket = System.fetch_env!("BUCKET_NAME")
     resp = Req.get!(req, url: "s3://")
@@ -43,7 +43,7 @@ defmodule ReqS3Test do
   test "list objects" do
     req =
       Req.new()
-      |> ReqS3.attach()
+      |> Defdo.S3.attach()
 
     body = Req.get!(req, url: "s3://ossci-datasets").body
 
@@ -63,7 +63,7 @@ defmodule ReqS3Test do
   test "list objects with bucket with period in name" do
     req =
       Req.new()
-      |> ReqS3.attach()
+      |> Defdo.S3.attach()
 
     %{status: 200} = Req.put!(req, url: "s3://wojtekmach.test")
     %{status: 200} = Req.put!(req, url: "s3://wojtekmach.test/1", body: "1")
@@ -76,7 +76,7 @@ defmodule ReqS3Test do
 
     req =
       Req.new()
-      |> ReqS3.attach()
+      |> Defdo.S3.attach()
 
     body = Req.get!(req, url: "s3://ossci-datasets").body
 
@@ -104,7 +104,7 @@ defmodule ReqS3Test do
 
     req =
       Req.new()
-      |> ReqS3.attach()
+      |> Defdo.S3.attach()
 
     body = Req.get!(req, url: "s3://#{bucket}?versions").body
 
@@ -120,7 +120,7 @@ defmodule ReqS3Test do
     @describetag :integration
 
     test "set from system env" do
-      req = Req.new(plugins: [ReqS3], url: "s3://")
+      req = Req.new(plugins: [Defdo.S3], url: "s3://")
 
       assert Map.new(Req.Request.prepare(req).options.aws_sigv4) == %{
                service: :s3,
@@ -130,7 +130,7 @@ defmodule ReqS3Test do
     end
 
     test "can be overridden" do
-      req = Req.new(plugins: [ReqS3], url: "s3://", aws_sigv4: [access_key_id: "foo"])
+      req = Req.new(plugins: [Defdo.S3], url: "s3://", aws_sigv4: [access_key_id: "foo"])
 
       assert Map.new(Req.Request.prepare(req).options.aws_sigv4) == %{
                service: :s3,
@@ -142,7 +142,7 @@ defmodule ReqS3Test do
     test "is not set when option nor env is not set " do
       System.delete_env("AWS_ACCESS_KEY_ID")
 
-      req = Req.new(plugins: [ReqS3], url: "s3://")
+      req = Req.new(plugins: [Defdo.S3], url: "s3://")
       assert Req.Request.prepare(req).options[:aws_sigv4] == nil
     after
       System.put_env("AWS_ACCESS_KEY_ID", @access_key_id)
@@ -157,7 +157,7 @@ defmodule ReqS3Test do
     ]
 
     assert "https://wojtekmach-test.s3.amazonaws.com/foo?X-Amz-Algorithm=AWS4-HMAC-SHA256&" <> _ =
-             ReqS3.presign_url(options)
+             Defdo.S3.presign_url(options)
   end
 
   test "presign_url/1 encode path" do
@@ -168,11 +168,11 @@ defmodule ReqS3Test do
     ]
 
     assert "https://wojtekmach-test.s3.amazonaws.com/hello world.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&" <>
-             _ = ReqS3.presign_url(options)
+             _ = Defdo.S3.presign_url(options)
   end
 
   test "presign_url/1 upload" do
-    url = ReqS3.presign_url(url: "s3://wojtekmach-test/foo", method: :put)
+    url = Defdo.S3.presign_url(url: "s3://wojtekmach-test/foo", method: :put)
     body = "hi#{Time.utc_now()}"
 
     %{status: 200} =
@@ -190,7 +190,7 @@ defmodule ReqS3Test do
 
   test "presign_url/1 custom endpoint url" do
     assert "https://custom/bucket/key?X-Amz-Algorithm=AWS4-HMAC-SHA256&" <> _ =
-             ReqS3.presign_url(
+             Defdo.S3.presign_url(
                url: "s3://bucket/key",
                endpoint_url: "https://custom",
                access_key_id: "",
@@ -202,7 +202,7 @@ defmodule ReqS3Test do
     System.put_env("AWS_ENDPOINT_URL_S3", "https://custom")
 
     assert "https://custom/bucket/key?X-Amz-Algorithm=AWS4-HMAC-SHA256&" <> _ =
-             ReqS3.presign_url(
+             Defdo.S3.presign_url(
                url: "s3://bucket/key",
                access_key_id: "",
                secret_access_key: ""
@@ -225,7 +225,7 @@ defmodule ReqS3Test do
       content_type: "text/plain"
     ]
 
-    form = ReqS3.presign_form(options)
+    form = Defdo.S3.presign_form(options)
     body = "test#{DateTime.utc_now()}"
 
     File.write!("#{tmp_dir}/foo.txt", body)

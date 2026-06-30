@@ -1,0 +1,62 @@
+# ─── defdo_s3 Woodpecker CI/CD ──────────────────────────────────────────────
+
+when:
+  - event: [push, pull_request]
+    branch: main
+  - event: tag
+  - event: manual
+
+steps:
+  - name: format-and-compile
+    image: elixir:1.19.5
+    when:
+      event: [push, pull_request]
+    commands:
+      - mix do local.hex --force, local.rebar --force
+      - mix deps.get
+      - mix format --check-formatted
+      - mix compile --warnings-as-errors
+
+  - name: test
+    image: elixir:1.19.5
+    when:
+      event: [push, pull_request]
+    commands:
+      - mix do local.hex --force, local.rebar --force
+      - mix deps.get
+      - mix compile --warnings-as-errors
+      - mix test
+
+  - name: release-validate
+    image: elixir:1.19.5
+    when:
+      event: tag
+    environment:
+      HEX_API_KEY:
+        from_secret: hex_api_key
+    commands:
+      - mix do local.hex --force, local.rebar --force
+      - mix deps.get
+      - mix format --check-formatted
+      - mix compile --warnings-as-errors
+      - mix test
+      - mix hex.build
+
+  - name: hex-publish
+    image: elixir:1.19.5
+    when:
+      event: tag
+    depends_on: [release-validate]
+    environment:
+      HEX_API_KEY:
+        from_secret: hex_api_key
+    commands:
+      - |
+        set -e
+        if [ -z "$HEX_API_KEY" ]; then
+          echo "ERROR: HEX_API_KEY is required to publish"
+          exit 1
+        fi
+        mix do local.hex --force, local.rebar --force
+        mix deps.get
+        mix hex.publish --yes

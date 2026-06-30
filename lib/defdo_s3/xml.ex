@@ -1,4 +1,4 @@
-defmodule ReqS3.XML do
+defmodule Defdo.S3.XML do
   @moduledoc false
 
   if System.otp_release() < "25" do
@@ -101,7 +101,7 @@ defmodule ReqS3.XML do
   @doc ~S'''
   Parses XML into "simple format".
 
-  This is currently unused by ReqS3, it is just a demonstration of the underlying `parse/3`
+  This is currently unused by Defdo.S3, it is just a demonstration of the underlying `parse/3`
   function.
 
   ## Examples
@@ -112,7 +112,7 @@ defmodule ReqS3.XML do
       ...>   <item><a>2</a></item>
       ...> </items>
       ...> """
-      iex> ReqS3.XML.parse_simple(xml)
+      iex> Defdo.S3.XML.parse_simple(xml)
       {"items", [], [{"item", [], [{"a", [], ["1"]}]}, {"item", [], [{"a", [], ["2"]}]}]}
   '''
   def parse_simple(xml) do

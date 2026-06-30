@@ -1,4 +1,4 @@
-defmodule ReqS3 do
+defmodule Defdo.S3 do
   @external_resource "README.md"
   @moduledoc "README.md"
              |> File.read!()
@@ -18,7 +18,7 @@ defmodule ReqS3 do
   @doc """
   Handles the `s3://` URL scheme.
 
-  This request step is automatically added on `ReqS3.attach(request)`.
+  This request step is automatically added on `Defdo.S3.attach(request)`.
 
   See module documentation for usage examples.
 
@@ -62,7 +62,7 @@ defmodule ReqS3 do
          request.options[:decode_body] != false and
          request.options[:raw] != true and
          match?(["application/xml" <> _], response.headers["content-type"]) do
-      response = update_in(response.body, &ReqS3.XML.parse_s3/1)
+      response = update_in(response.body, &Defdo.S3.XML.parse_s3/1)
       {request, response}
     else
       {request, response}
@@ -103,11 +103,11 @@ defmodule ReqS3 do
   Note: This example assumes `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables
   are set.
 
-      iex> req = Req.new() |> ReqS3.attach()
+      iex> req = Req.new() |> Defdo.S3.attach()
       iex> bucket = System.fetch_env!("BUCKET_NAME")
       iex> key = "key1"
       iex> %{status: 200} = Req.put!(req, url: "s3://#{bucket}/#{key}", body: "Hello, World!")
-      iex> url = ReqS3.presign_url(bucket: bucket, key: key)
+      iex> url = Defdo.S3.presign_url(bucket: bucket, key: key)
       iex> url =~ "https://#{bucket}.s3.amazonaws.com/#{key}?X-Amz-Algorithm=AWS4-HMAC-SHA256&"
       true
       iex> %{status: 200, body: body} = Req.get!(url)
@@ -189,7 +189,7 @@ defmodule ReqS3 do
       ...>   key: "key1",
       ...>   expires_in: :timer.hours(1)
       ...> ]
-      iex> form = ReqS3.presign_form(options)
+      iex> form = Defdo.S3.presign_form(options)
       iex> form.url
       "https://bucket1.s3.amazonaws.com"
       iex> form.fields

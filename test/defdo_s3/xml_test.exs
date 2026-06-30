@@ -1,6 +1,6 @@
-defmodule ReqS3.XMLTest do
+defmodule Defdo.S3.XMLTest do
   use ExUnit.Case, async: true
-  doctest ReqS3.XML
+  doctest Defdo.S3.XML
 
   describe "parse_s3" do
     test "ListAllMyBucketsResult" do
@@ -24,7 +24,7 @@ defmodule ReqS3.XMLTest do
       </ListAllMyBucketsResult>
       """
 
-      assert ReqS3.XML.parse_s3(xml) == %{
+      assert Defdo.S3.XML.parse_s3(xml) == %{
                "ListAllMyBucketsResult" => %{
                  "Buckets" => [
                    %{"CreationDate" => "2023-02-21T15:41:58.000Z", "Name" => "bucket1"},
@@ -48,7 +48,7 @@ defmodule ReqS3.XMLTest do
       </ListAllMyBucketsResult>
       """
 
-      assert ReqS3.XML.parse_s3(xml) == %{
+      assert Defdo.S3.XML.parse_s3(xml) == %{
                "ListAllMyBucketsResult" => %{
                  "Buckets" => [
                    %{"CreationDate" => "2023-02-21T15:41:58.000Z", "Name" => "bucket1"}
@@ -84,7 +84,7 @@ defmodule ReqS3.XMLTest do
       </ListBucketResult>
       """
 
-      assert ReqS3.XML.parse_s3(xml) == %{
+      assert Defdo.S3.XML.parse_s3(xml) == %{
                "ListBucketResult" => %{
                  "Contents" => [
                    %{
@@ -124,7 +124,7 @@ defmodule ReqS3.XMLTest do
       </ListBucketResult>
       """
 
-      assert ReqS3.XML.parse_s3(xml) == %{
+      assert Defdo.S3.XML.parse_s3(xml) == %{
                "ListBucketResult" => %{
                  "Contents" => [
                    %{
@@ -147,7 +147,7 @@ defmodule ReqS3.XMLTest do
       </ListVersionsResult>
       """
 
-      assert ReqS3.XML.parse_s3(xml) == %{
+      assert Defdo.S3.XML.parse_s3(xml) == %{
                "ListVersionsResult" => %{
                  "Name" => "wojtekmach-test",
                  "Prefix" => nil,
@@ -175,7 +175,7 @@ defmodule ReqS3.XMLTest do
       </root>
       """
 
-      assert ReqS3.XML.parse_simple(xml) ==
+      assert Defdo.S3.XML.parse_simple(xml) ==
                {"root", [], [{"children", [], [{"child", [{"id", "1"}], ["Content 1"]}]}]}
     end
 
@@ -187,7 +187,7 @@ defmodule ReqS3.XMLTest do
       <element#{uniq} attribute#{uniq}=""/>
       """
 
-      assert ReqS3.XML.parse_simple(xml) == {"element#{uniq}", [{"attribute#{uniq}", ""}], []}
+      assert Defdo.S3.XML.parse_simple(xml) == {"element#{uniq}", [{"attribute#{uniq}", ""}], []}
 
       e =
         assert_raise ArgumentError, fn ->

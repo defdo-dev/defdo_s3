@@ -1,10 +1,10 @@
-defmodule ReqS3.MixProject do
+defmodule Defdo.S3.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :req_s3,
-      version: "0.2.3",
+      app: :defdo_s3,
+      version: "0.1.0",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -16,11 +16,10 @@ defmodule ReqS3.MixProject do
         extras: ["README.md", "CHANGELOG.md", "examples/mnist.livemd", "examples/upload.livemd"]
       ],
       package: [
-        description: "Req plugin for S3.",
+        description: "Req plugin for S3 (defdo fork).",
         licenses: ["Apache-2.0"],
         links: %{
-          "GitHub" => "https://github.com/wojtekmach/req_s3",
-          "Changelog" => "https://hexdocs.pm/req_s3/changelog.html"
+          "GitHub" => "https://github.com/defdo-dev/defdo_s3"
         }
       ]
     ]
