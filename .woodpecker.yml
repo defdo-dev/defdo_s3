@@ -34,13 +34,21 @@ steps:
     environment:
       HEX_API_KEY:
         from_secret: hex_api_key
+      HEX_ORG_TOKEN:
+        from_secret: hex_org_token
     commands:
-      - mix do local.hex --force, local.rebar --force
-      - mix deps.get
-      - mix format --check-formatted
-      - mix compile --warnings-as-errors
-      - mix test
-      - mix hex.build
+      - |
+        set -e
+        HEX_ORG_NAME="defdo"
+        mix do local.hex --force, local.rebar --force
+        if [ -n "$HEX_ORG_TOKEN" ]; then
+          mix hex.organization auth "$HEX_ORG_NAME" --key "$HEX_ORG_TOKEN"
+        fi
+        mix deps.get
+        mix format --check-formatted
+        mix compile --warnings-as-errors
+        mix test
+        mix hex.build
 
   - name: hex-publish
     image: elixir:1.19.5
@@ -50,13 +58,19 @@ steps:
     environment:
       HEX_API_KEY:
         from_secret: hex_api_key
+      HEX_ORG_TOKEN:
+        from_secret: hex_org_token
     commands:
       - |
         set -e
+        HEX_ORG_NAME="defdo"
         if [ -z "$HEX_API_KEY" ]; then
           echo "ERROR: HEX_API_KEY is required to publish"
           exit 1
         fi
         mix do local.hex --force, local.rebar --force
+        if [ -n "$HEX_ORG_TOKEN" ]; then
+          mix hex.organization auth "$HEX_ORG_NAME" --key "$HEX_ORG_TOKEN"
+        fi
         mix deps.get
         mix hex.publish --yes

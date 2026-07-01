@@ -18,6 +18,7 @@ defmodule Defdo.S3.MixProject do
       package: [
         description: "Req plugin for S3 (defdo fork).",
         licenses: ["Apache-2.0"],
+        organization: "defdo",
         links: %{
           "GitHub" => "https://github.com/defdo-dev/defdo_s3"
         }
