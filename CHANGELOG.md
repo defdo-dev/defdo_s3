@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.1.0 — 2026-07-01
+
+  * Forked from [wojtekmach/req_s3](https://github.com/wojtekmach/req_s3) v0.2.3.
+  * Renamed module to `Defdo.S3` for defdo ecosystem ownership.
+  * Published under the `defdo` Hex organization.
+
+---
+
+Previous releases from upstream `req_s3`:
+
 ## v0.2.3
 
   * Use scheme and port from `endpoint_url`.

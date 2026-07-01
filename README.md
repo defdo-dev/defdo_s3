@@ -1,25 +1,26 @@
-# ReqS3
+# Defdo.S3
 
-[![CI](https://github.com/wojtekmach/req_s3/actions/workflows/ci.yml/badge.svg)](https://github.com/wojtekmach/req_s3/actions/workflows/ci.yml)
-[![License](https://img.shields.io/hexpm/l/req_s3.svg)](https://github.com/wojtekmach/req_s3/blob/main/LICENSE.md)
-[![Version](https://img.shields.io/hexpm/v/req_s3.svg)](https://hex.pm/packages/req_s3)
-[![Hex Docs](https://img.shields.io/badge/documentation-gray.svg)](https://hexdocs.pm/req_s3)
+[![Version](https://img.shields.io/badge/hex-defdo_s3-blue.svg)](https://hex.pm/orgs/defdo)
+[![License](https://img.shields.io/hexpm/l/req_s3.svg)](https://github.com/defdo-dev/defdo_s3/blob/main/LICENSE.md)
 
-[Req](https://github.com/wojtekmach/req) plugin for [Amazon S3](https://aws.amazon.com/s3/) and S3-compatible services.
+[Req](https://github.com/wojtekmach/req) plugin for [Amazon S3](https://aws.amazon.com/s3/) and S3-compatible services. Forked from [wojtekmach/req_s3](https://github.com/wojtekmach/req_s3).
 
 <!-- MDOC !-->
 
-ReqS3 handles a custom `s3://` url scheme. Example requests are:
+Defdo.S3 handles a custom `s3://` url scheme. Example requests are:
 
 ```elixir
 # list buckets
-Req.get!(req, url: "s3://")
+Req.new() |> Defdo.S3.attach()
+  |> Req.get!(url:"s3://")
 
 # list objects
-Req.get!(req, url: "s3://#{bucket}")
+Req.new() |> Defdo.S3.attach()
+  |> Req.get!(url:"s3://#{bucket}")
 
 # get object
-Req.get!(req, url: "s3://#{bucket}/#{key}")
+Req.new() |> Defdo.S3.attach()
+  |> Req.get!(url:"s3://#{bucket}/#{key}")
 
 # put object
 Req.put!(req, url: "s3://#{bucket}/#{key}")
@@ -32,12 +33,13 @@ The responses for listing buckets and objects are automatically decoded.
 ```elixir
 Mix.install([
   {:req, "~> 0.5.0"},
-  {:req_s3, "~> 0.2.3"}
+  {:defdo_s3, "~> 0.1.0", organization: "defdo"}
 ])
 
-req = Req.new() |> ReqS3.attach()
+req = Req.new() |> Defdo.S3.attach()
 
-Req.get!(req, url: "s3://ossci-datasets").body
+Req.new() |> Defdo.S3.attach()
+  |> Req.get!(url:"s3://ossci-datasets").body
 #=>
 # %{
 #   "ListBucketResult" => %{
@@ -51,7 +53,8 @@ Req.get!(req, url: "s3://ossci-datasets").body
 #   }
 # }
 
-body = Req.get!(req, url: "s3://ossci-datasets/mnist/t10k-images-idx3-ubyte.gz").body
+body = Req.new() |> Defdo.S3.attach()
+  |> Req.get!(url:"s3://ossci-datasets/mnist/t10k-images-idx3-ubyte.gz").body
 <<_::32, n_images::32, n_rows::32, n_cols::32, _body::binary>> = body
 {n_images, n_rows, n_cols}
 #=> {10_000, 28, 28}
@@ -74,7 +77,7 @@ $ docker run -p 9000:9000 \
 
 ### Pre-signing
 
-ReqS3 can be used to presign URLs:
+Defdo.S3 can be used to presign URLs:
 
 ```elixir
 options = [
@@ -82,10 +85,10 @@ options = [
   secret_access_key: System.fetch_env!("AWS_SECRET_ACCESS_KEY")
 ]
 
-req = Req.new() |> ReqS3.attach(aws_sigv4: options)
+req = Req.new() |> Defdo.S3.attach(aws_sigv4: options)
 %{status: 200} = Req.put!(req, url: "s3://bucket1/key1", body: "Hello, World!")
 
-presigned_url = ReqS3.presign_url([bucket: "bucket1", key: "key1"] ++ options)
+presigned_url = Defdo.S3.presign_url([bucket: "bucket1", key: "key1"] ++ options)
 #=> "https://bucket1.s3.amazonaws.com/key1?X-Amz-Algorithm=AWS4-HMAC-SHA256&..."
 
 Req.get!(presigned_url).body
@@ -95,7 +98,7 @@ Req.get!(presigned_url).body
 and form uploads:
 
 ```elixir
-form = ReqS3.presign_form([bucket: "bucket1", key: "key1"] ++ options)
+form = Defdo.S3.presign_form([bucket: "bucket1", key: "key1"] ++ options)
 %{status: 204} = Req.post!(form.url, form_multipart: [file: "Hello, World!"] ++ form.fields)
 
 Req.get!(presigned_url).body
@@ -104,7 +107,7 @@ Req.get!(presigned_url).body
 
 ## Environment Variables
 
-ReqS3 supports the following standardised system environment variables:
+Defdo.S3 supports the following standardised system environment variables:
 
   * `AWS_ACCESS_KEY_ID`
 

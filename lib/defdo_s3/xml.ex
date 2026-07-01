@@ -3,7 +3,7 @@ defmodule Defdo.S3.XML do
 
   if System.otp_release() < "25" do
     # xmerl_sax_parser :disallow_entities requires OTP 25+
-    raise "req_s3 requires OTP 25+"
+    raise "defdo_s3 requires OTP 25+"
   end
 
   @list_fields [
