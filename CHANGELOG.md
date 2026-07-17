@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.1.1 — 2026-07-17
+
+  * deps: bump `req` to 0.6.3 and `ex_doc` to 0.40.3 (hex.outdated green).
+
 ## v0.1.0 — 2026-07-01
 
   * Forked from [wojtekmach/req_s3](https://github.com/wojtekmach/req_s3) v0.2.3.
