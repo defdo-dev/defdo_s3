@@ -1,4 +1,13 @@
 # ─── defdo_s3 Woodpecker CI/CD ──────────────────────────────────────────────
+#
+# Runs on the docker/kubernetes agent (`platform: linux/amd64`): `image:` is a
+# real container (elixir). The label is REQUIRED — without it a tag job can land
+# on the darwin exec agent and die with `exec: "<image>": executable file not
+# found` (that agent runs the local backend, where image = host binary). See the
+# `defdo-woodpecker-ci` skill.
+
+labels:
+  platform: linux/amd64
 
 when:
   - event: [push, pull_request]
