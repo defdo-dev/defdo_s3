@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.1.2 — 2026-07-29
+
+  * Support Req 0.7.x alongside Req 0.5.x.
+  * Skip the removed `Req.Request.current_request_steps` field on Req 0.7.x.
+  * Remove the Req 0.6.x dependency constraint.
+
 ## v0.1.1 — 2026-07-17
 
   * deps: bump `req` to 0.6.3 and `ex_doc` to 0.40.3 (hex.outdated green).

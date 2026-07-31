@@ -32,7 +32,7 @@ The responses for listing buckets and objects are automatically decoded.
 
 ```elixir
 Mix.install([
-  {:req, "~> 0.5.0"},
+  {:req, "~> 0.7.0"},
   {:defdo_s3, "~> 0.1.0", organization: "defdo"}
 ])
 

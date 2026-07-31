@@ -167,7 +167,7 @@ defmodule Defdo.S3Test do
       secret_access_key: "bar"
     ]
 
-    assert "https://wojtekmach-test.s3.amazonaws.com/hello world.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&" <>
+    assert "https://wojtekmach-test.s3.amazonaws.com/hello%20world.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&" <>
              _ = Defdo.S3.presign_url(options)
   end
 
