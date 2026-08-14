@@ -29,7 +29,7 @@ steps:
     when:
       event: [push, pull_request]
     commands:
-      - mix do local.hex --force, local.rebar --force
+      - mix do local.hex --force + local.rebar --force
       - mix deps.get
       - mix compile --warnings-as-errors
       - MIX_ENV=test mix compile --warnings-as-errors
@@ -40,7 +40,7 @@ steps:
       event: [push, pull_request]
     depends_on: [compile]
     commands:
-      - mix do local.hex --force, local.rebar --force
+      - mix do local.hex --force + local.rebar --force
       - mix format --check-formatted
 
   - name: test
@@ -49,5 +49,5 @@ steps:
       event: [push, pull_request]
     depends_on: [compile]
     commands:
-      - mix do local.hex --force, local.rebar --force
+      - mix do local.hex --force + local.rebar --force
       - mix test
