@@ -1,41 +1,21 @@
-# ─── defdo_s3 Woodpecker CI/CD ──────────────────────────────────────────────
+# ─── defdo_s3 RELEASE (tag) ─────────────────────────────────────────────────
 #
 # Runs on the docker/kubernetes agent (`platform: linux/amd64`): `image:` is a
 # real container (elixir). The label is REQUIRED — without it a tag job can land
 # on the darwin exec agent and die with `exec: "<image>": executable file not
 # found` (that agent runs the local backend, where image = host binary). See the
 # `defdo-woodpecker-ci` skill.
+#
+# release-validate is the compile on the tag path (it warms _build); hex-publish
+# depends_on it and reuses the warm workspace instead of recompiling.
 
 labels:
   platform: linux/amd64
 
 when:
-  - event: [push, pull_request]
-    branch: main
   - event: tag
-  - event: manual
 
 steps:
-  - name: format-and-compile
-    image: elixir:1.19.5
-    when:
-      event: [push, pull_request]
-    commands:
-      - mix do local.hex --force, local.rebar --force
-      - mix deps.get
-      - mix format --check-formatted
-      - mix compile --warnings-as-errors
-
-  - name: test
-    image: elixir:1.19.5
-    when:
-      event: [push, pull_request]
-    commands:
-      - mix do local.hex --force, local.rebar --force
-      - mix deps.get
-      - mix compile --warnings-as-errors
-      - mix test
-
   - name: release-validate
     image: elixir:1.19.5
     when:
@@ -49,6 +29,18 @@ steps:
       - |
         set -e
         HEX_ORG_NAME="defdo"
+        TAG="${CI_COMMIT_TAG}"
+        case "$TAG" in
+          v*)
+            echo "ERROR: tag '$TAG' is v-prefixed. Defdo release tags are bare: ${TAG#v}"
+            exit 1
+            ;;
+        esac
+        VSN="$(grep -oE 'version: "[^"]+"' mix.exs | head -1 | sed -E 's/version: "([^"]+)"/\1/')"
+        if [ "$TAG" != "$VSN" ]; then
+          echo "ERROR: tag '$TAG' does not match mix.exs version '$VSN'"
+          exit 1
+        fi
         mix do local.hex --force, local.rebar --force
         if [ -n "$HEX_ORG_TOKEN" ]; then
           mix hex.organization auth "$HEX_ORG_NAME" --key "$HEX_ORG_TOKEN"
