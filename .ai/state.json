@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "workspaceId": "ws_20260815015603556_94ec3f9c",
+  "revision": 0,
+  "updatedAt": "2026-08-15T01:56:03.556Z",
+  "activeTask": null,
+  "git": {
+    "worktreeId": "sha256:a4a062718c120e70",
+    "branch": "main",
+    "head": "e8aa63a12e46bcfb5eea4ca6325b76dfe3c1c291",
+    "detached": false,
+    "dirty": false,
+    "diffFingerprint": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "changedFiles": [],
+    "observedAt": "2026-08-15T01:56:03.608Z"
+  },
+  "verification": {
+    "overall": "not_run",
+    "against": null,
+    "checks": []
+  },
+  "pointers": {
+    "lastPlanId": null,
+    "lastCheckpointId": null,
+    "lastHandoffId": null
+  },
+  "lastWriter": {
+    "sessionId": null,
+    "command": "init",
+    "idempotencyKey": null
+  }
+}
