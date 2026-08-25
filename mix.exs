@@ -4,7 +4,7 @@ defmodule Defdo.S3.MixProject do
   def project do
     [
       app: :defdo_s3,
-      version: "0.1.2",
+      version: "0.2.0",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -44,8 +44,8 @@ defmodule Defdo.S3.MixProject do
 
   defp deps do
     [
-      {:req, "~> 0.5.6 or ~> 0.7.0"},
-      {:ex_doc, ">= 0.0.0", only: :docs}
+      {:req, "~> 0.7"},
+      {:ex_doc, "~> 0.40", only: :docs}
     ]
   end
 end

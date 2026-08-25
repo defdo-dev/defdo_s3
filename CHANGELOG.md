@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 0.2.0
+
+### Every requirement declares the line it resolves on
+
+- `req` `~> 0.5.6 or ~> 0.7.0` -> `~> 0.7` (resolves 0.7.1). An accumulated
+  `or` list grows a clause per bump and never loses one.
+- `ex_doc` `>= 0.0.0` -> `~> 0.40`. A `>=` with no ceiling claims every version
+  ever published works, and nothing verified that.
+
+Minor rather than patch: no source changed, but a narrowed requirement is not
+something a consumer can take blindly.
+
+**Consumers must edit to follow.** `defdo_theme`, `defdo_theme_hub`,
+`defdo_uploader` and `defdo_cms` all declare `defdo_s3 ~> 0.1.0` — three
+segments, so they cap at `< 0.2.0` and will silently stay on 0.1.x. Hex
+resolves the highest satisfiable version without reporting a conflict. They
+need `~> 0.2`.
+
+1 doctest, 8 tests, 0 failures. `mix hex.outdated` empty.
+
 ## v0.1.2 — 2026-07-29
 
   * Support Req 0.7.x alongside Req 0.5.x.
