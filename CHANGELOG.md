@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.2.1
+
+### Refresh release dependencies
+
+- Bump `req` to 0.7.4 and `ex_doc` to 0.40.4.
+- Bump transitive `mint` to 1.10.1 to clear the current HTTP response-smuggling advisory.
+
 ## 0.2.0
 
 ### Every requirement declares the line it resolves on
